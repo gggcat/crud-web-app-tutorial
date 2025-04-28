@@ -1,0 +1,31 @@
+{
+    "name": "stock-frontend",
+    "type": "module",
+    "version": "1.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build --mode client && vite build"
+    },
+    "dependencies": {
+        "vite": "^5.2.12",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "@mui/icons-material": "^5.15.4",
+        "@mui/material": "^5.15.4",
+        "@mui/x-data-grid": "^7.0.0",
+        "@emotion/react": "^11.11.3",
+        "@emotion/styled": "^11.11.0",
+        "axios": "^1.4.0"
+    },
+    "devDependencies": {
+        "vite": "^5.2.12",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "@mui/icons-material": "^5.15.4",
+        "@mui/material": "^5.15.4",
+        "@mui/x-data-grid": "^7.0.0",
+        "@emotion/react": "^11.11.3",
+        "@emotion/styled": "^11.11.0",
+        "axios": "^1.4.0"
+    }
+}

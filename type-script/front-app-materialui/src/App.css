@@ -1,0 +1,19 @@
+/* frontend/src/App.css */
+input {
+    margin: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  button {
+    margin: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #0056b3;
+  }

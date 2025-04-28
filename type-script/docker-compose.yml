@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
+    working_dir: /home/dynamodblocal
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./dynamodb-data:/home/dynamodblocal/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -o /dev/null http://localhost:8000 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  api:
+    build: ./api
+    ports:
+      - "8787:8787"
+    volumes:
+      - ./api:/app          # ホストのapiディレクトリをコンテナの/appにマウント
+      - /app/node_modules   # node_modulesはコンテナ内のみ（ホストと分離）
+    environment:
+      AWS_ACCESS_KEY_ID: "dummy"
+      AWS_SECRET_ACCESS_KEY: "dummy"
+      AWS_DEFAULT_REGION: "local"
+      DYNAMODB_ENDPOINT: "http://dynamodb-local:8000"
+      DYNAMODB_TABLE: "stocks"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sSf http://localhost:8787/stocks?limit=1 || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      dynamodb-local:
+        condition: service_healthy
+
+  front-simple:
+    build: ./front-app-simple
+    ports:
+      - "5001:5173"
+    volumes:
+      - ./front-app-simple:/app     # ホストのfrontendディレクトリをコンテナの/appにマウント
+      - /app/node_modules   # node_modulesはコンテナ内のみ（ホストと分離）
+    working_dir: /app
+    environment:
+      VITE_API_URL: "http://api:8787"
+    depends_on:
+      api:
+        condition: service_healthy
+    command: ["npm", "run", "dev", "--", "--host"]
+
+  front-mui:
+    build: ./front-app-materialui
+    ports:
+      - "5002:5173"
+    volumes:
+      - ./front-app-materialui:/app     # ホストのfrontendディレクトリをコンテナの/appにマウント
+      - /app/node_modules   # node_modulesはコンテナ内のみ（ホストと分離）
+    working_dir: /app
+    environment:
+      VITE_API_URL: "http://api:8787"
+      CHOKIDAR_USEPOLLING: "true"
+    depends_on:
+      api:
+        condition: service_healthy
+    command: ["npm", "run", "dev", "--", "--host"]
+
+  front-tailwind:
+    build: ./front-app-tailwind
+    ports:
+      - "5003:5173"
+    volumes:
+      - ./front-app-tailwind:/app     # ホストのfrontendディレクトリをコンテナの/appにマウント
+      - /app/node_modules   # node_modulesはコンテナ内のみ（ホストと分離）
+    working_dir: /app
+    environment:
+      VITE_API_URL: "http://api:8787"
+      CHOKIDAR_USEPOLLING: "true"
+    depends_on:
+      api:
+        condition: service_healthy
+    command: ["npm", "run", "dev", "--", "--host"]

@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    /* 基本設定 */
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext", "ES2015"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+
+    /* 型チェック関連 */
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* モジュール解決 */
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": false,
+
+    /* JSX設定 */
+    "jsx": "react-jsx",
+
+    /* 出力制御 */
+    "noEmit": true,
+    "isolatedModules": true,
+
+    /* 環境統合 */
+    "types": ["vite/client"],
+
+    /* クラス関連 */
+    "useDefineForClassFields": true,
+
+    /* JavaScript互換 */
+    "allowJs": false
+  },
+  "include": ["src"]
+}
