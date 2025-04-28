@@ -1,0 +1,17 @@
+name = "stock-arbitrage-manager-api"
+main = "src/index.ts"
+compatibility_date = "2024-10-27"
+compatibility_flags = [
+    "nodejs_compat",
+    "nodejs_compat_populate_process_env"
+]
+
+[vars]
+DYNAMODB_ENDPOINT = "http://dynamodb-local:8000"
+DYNAMODB_TABLE = "stocks"
+AWS_ACCESS_KEY_ID = "dummy"
+AWS_SECRET_ACCESS_KEY = "dummy"
+
+[dev]
+ip = "0.0.0.0"
+port = 8788
