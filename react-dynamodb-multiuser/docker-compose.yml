@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
+    working_dir: /home/dynamodblocal
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./dynamodb-data:/home/dynamodblocal/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -o /dev/null http://localhost:8000 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  api-hono:
+    build: ./api-hono
+    ports:
+      - "8788:8788"
+    volumes:
+      - ./api-hono:/app          # ホストのapiディレクトリをコンテナの/appにマウント
+      - /app/node_modules   # node_modulesはコンテナ内のみ（ホストと分離）
+    environment:
+      AWS_ACCESS_KEY_ID: "dummy"
+      AWS_SECRET_ACCESS_KEY: "dummy"
+      AWS_REGION: "local"
+      DYNAMODB_ENDPOINT: "http://dynamodb-local:8000"
+      DYNAMODB_TABLE: "stocks"
+      CHOKIDAR_USEPOLLING: "true"
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: "http://localhost:8788/auth/google"
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGINS: http://localhost:8788,https://yourdomain.com
+      USERS_TABLE: "users_info"
+      STOCKS_TABLE: "users_stocks"
+    # healthcheck:
+    #   test:
+    #     [
+    #       "CMD-SHELL",
+    #       "curl -sSf http://localhost:8788/stocks?limit=1 || exit 1"
+    #     ]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
+    #   start_period: 30s
+    depends_on:
+      dynamodb-local:
+        condition: service_healthy
+    entrypoint: /app/entrypoint.sh
+
+  front-tailwind:
+    build: ./front-app-tailwind
+    ports:
+      - "5003:5173"
+    volumes:
+      - ./front-app-tailwind:/app     # ホストのfrontendディレクトリをコンテナの/appにマウント
+      - /app/node_modules   # node_modulesはコンテナ内のみ（ホストと分離）
+    working_dir: /app
+    environment:
+      VITE_API_URL: "http://api-hono:8788" #api-hono参照
+      CHOKIDAR_USEPOLLING: "true"
+    depends_on:
+      api-hono:
+        condition: service_healthy
+    command: ["npm", "run", "dev", "--", "--host"]
