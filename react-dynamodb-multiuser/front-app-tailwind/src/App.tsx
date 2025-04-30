@@ -35,7 +35,6 @@ function App() {
         .catch(() => setUser(null));
     }
   }, []);
-  console.log(user)
 
   return (
     <div className="flex min-h-screen bg-gray-100">
