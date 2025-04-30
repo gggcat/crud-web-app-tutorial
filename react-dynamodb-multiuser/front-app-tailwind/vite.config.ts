@@ -1,31 +1,51 @@
 import { defineConfig, loadEnv } from 'vite'
+import type { ProxyOptions } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'node:path'
 
 /**
- * Vite開発サーバー設定
- * - .envファイルからVITE_API_URLを読み込み
- * - /api へのリクエストをバックエンドAPIへプロキシ
+ * Vite開発サーバー設定（強化版）
+ * - 環境変数の厳格なバリデーション
+ * - マルチ環境対応
+ * - 型安全なプロキシ設定
  */
 export default defineConfig(({ mode }) => {
-  // .envファイルから環境変数を読み込む
-  const env = loadEnv(mode, process.cwd(), '')
+  // VITE_ で始まる環境変数をロード
+  const env = loadEnv(mode, process.cwd(), 'VITE_')
 
-  // APIエンドポイントのバリデーション
-  if (!env.VITE_API_URL) {
-    throw new Error('VITE_API_URL is not defined in environment variables')
+  // 環境変数のバリデーション
+  const requiredVars = ['VITE_API_URL', 'VITE_APP_ENV']
+  requiredVars.forEach(varName => {
+    if (!env[varName]) throw new Error(`${varName} is required`)
+  })
+
+  // プロキシ設定
+  const proxyConfig: Record<string, ProxyOptions> = {
+    '/api': {
+      target: env.VITE_API_URL,
+      changeOrigin: true,
+      rewrite: (p) => p.replace(/^\/api/, ''),
+      secure: env.VITE_APP_ENV === 'production',
+      ws: true,
+      configure: (proxy) => {
+        proxy.on('error', (err) => {
+          console.error('Proxy Error:', err)
+        })
+      }
+    }
   }
 
   return {
+    //plugins: [react()],
     server: {
-      host: true,
-      proxy: {
-        // /api で始まるリクエストをVITE_API_URLへ
-        '/api': {
-          target: env.VITE_API_URL,
-          changeOrigin: true,
-          rewrite: (path: string) => path.replace(/^\/api/, ''),
-          secure: false, // HTTPS自己証明書の場合はfalse
-          // ws: true, // WebSocketが必要な場合はコメント解除
-        }
+      proxy: proxyConfig,
+      // appType: 'spa' は Vite 4 以降は server 配下ではなくトップレベル
+    },
+    appType: 'spa', // ここで SPA モードを明示（Vite 4以降）
+    // historyApiFallbackはappType: 'spa'で自動有効なので不要
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
       }
     }
   }

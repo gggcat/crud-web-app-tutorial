@@ -88,7 +88,7 @@ export const getStock = async (c: Context, userId: string, stockCode: string): P
  * @param stock 株式データ
  * @throws 重複登録時/データ不整合時
  */
-export const putStock = async (c: Context, stock: Stock) => {
+export const createStock = async (c: Context, stock: Stock) => {
   const { STOCKS_TABLE } = env<{ STOCKS_TABLE: string }>(c)
   const client = getDynamoClient(c)
 
@@ -98,6 +98,29 @@ export const putStock = async (c: Context, stock: Stock) => {
       Item: validateStock(stock),
       // 既存データの上書き防止（ユニーク制約）
       ConditionExpression: 'attribute_not_exists(user_id) AND attribute_not_exists(stock_code)'
+    })
+  } catch (error) {
+    console.error(`[${stock.stock_code}] 株式登録エラー:`, error)
+    throw new Error(`株式 ${stock.stock_code} の登録に失敗しました（重複可能性あり）`)
+  }
+}
+
+/**
+ * 株式情報更新（UPDATE操作）
+ * @param c Honoコンテキスト
+ * @param userId ユーザーID
+ * @param stockCode 株式コード
+ * @param updateData 更新データ
+ * @throws 更新失敗時
+ */
+export const updateStock = async (c: Context, stock: Stock) => {
+  const { STOCKS_TABLE } = env<{ STOCKS_TABLE: string }>(c)
+  const client = getDynamoClient(c)
+
+  try {
+    await client.put({
+      TableName: STOCKS_TABLE,
+      Item: validateStock(stock),
     })
   } catch (error) {
     console.error(`[${stock.stock_code}] 株式登録エラー:`, error)

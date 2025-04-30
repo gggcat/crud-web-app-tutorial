@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { CheckCircleIcon, XCircleIcon,PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline"; // Heroicons推奨
+import ApiRequest from "./ApiRequest";
 
 interface Stock {
   stock_code: string;
@@ -29,7 +29,7 @@ const StocksTable = () => {
         page: page + 1,
       };
       if (sort) params.sort = `${sort.desc ? "-" : ""}${sort.field}`;
-      const res = await axios.get("/api/stocks", { params });
+      const res = await ApiRequest.get("/api/stocks", { params });
       setStocks(res.data.data);
       setPagination((prev) => ({
         ...prev,
@@ -62,7 +62,7 @@ const StocksTable = () => {
         stock_name: newStock.stock_name,
         quantity: Number(newStock.quantity),
       };
-      await axios.post(`/api/stocks/${newStock.stock_code}`, payload);
+      await ApiRequest.post(`/api/stocks/${newStock.stock_code}`, payload);
       setNewStock({ stock_code: "", stock_name: "", quantity: "" });
       fetchStocks();
     } catch {
@@ -80,7 +80,7 @@ const StocksTable = () => {
   const handleEditSave = async (stock_code: string) => {
     setLoading(true);
     try {
-      await axios.put(`/api/stocks/${stock_code}`, {
+      await ApiRequest.put(`/api/stocks/${stock_code}`, {
         stock_code,
         stock_name: editValue.stock_name,
         quantity: Number(editValue.quantity),
@@ -98,7 +98,7 @@ const StocksTable = () => {
   const handleDeleteStock = async (stock_code: string) => {
     setLoading(true);
     try {
-      await axios.delete(`/api/stocks/${stock_code}`);
+      await ApiRequest.delete(`/api/stocks/${stock_code}`);
       fetchStocks();
     } catch {
       setError("削除に失敗しました");

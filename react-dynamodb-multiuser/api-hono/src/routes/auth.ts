@@ -68,14 +68,27 @@ auth.get('/google', async (c) => {
 
     // セッショントークンを発行
     const appToken = await createSessionToken(c, user.user_id)
-    return c.json({
-      token: appToken,
-      user: {
-        id: user.user_id,
-        email: user.email,
-        name: user.name
+    // return c.json({
+    //   token: appToken,
+    //   user: {
+    //     id: user.user_id,
+    //     email: user.email,
+    //     name: user.name
+    //   }
+    // }, 201)
+
+    //トークンをフロントエンドのコールバックへ返す
+    const code = c.req.query('code');
+    const stateRaw = c.req.query('callback_url');
+    let callbackUrl = 'http://localhost:5003/login/callback';
+    try {
+      if (stateRaw) {
+        const stateObj = JSON.parse(decodeURIComponent(stateRaw));
+        if (stateObj.callbackUrl) callbackUrl = stateObj.callbackUrl;
       }
-    }, 201)
+    } catch {}
+
+    return c.redirect(`${callbackUrl}?jwt=${encodeURIComponent(appToken)}`);
 
   } catch (error) {
     // サーバーエラー時のハンドリング
