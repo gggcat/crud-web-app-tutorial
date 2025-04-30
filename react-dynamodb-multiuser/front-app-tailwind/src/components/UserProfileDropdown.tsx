@@ -21,19 +21,26 @@ const UserProfileDropdown = ({ user, onLogin, onLogout }) => {
     return name.trim().charAt(0).toUpperCase();
   };
 
-  // Google風の茶色背景
-  const avatarBg = "bg-[#795548]";
+  // アイコン背景
+  const avatarBg = "bg-gray-100"; // 薄いグレー背景
 
-  // --- 未ログイン時のデフォルト表示 ---
   if (!user) {
     return (
       <button
         onClick={onLogin}
-        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-lg ${avatarBg}`}
+        className={`w-10 h-10 rounded-full flex items-center justify-center ring-1 ring-gray-300 ${avatarBg}`}
         title="ログイン"
       >
-        {/* デフォルトのGアイコン */}
-        G
+        {/* グレーのユーザーアイコン */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 h-6"
+          fill="#757575"
+          viewBox="0 0 24 24"
+        >
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 20c0-4 16-4 16 0" />
+        </svg>
       </button>
     );
   }
@@ -71,7 +78,7 @@ const UserProfileDropdown = ({ user, onLogin, onLogout }) => {
                 </svg>
               </button>
             </div>
-            <p className="text-sm text-gray-500 mt-1">dds-net.org によって管理されています</p>
+            <p className="text-sm text-gray-500 mt-1">Googleアカウントにログインしています</p>
           </div>
 
           {/* プロフィール部分 */}
@@ -88,21 +95,27 @@ const UserProfileDropdown = ({ user, onLogin, onLogout }) => {
                   getInitial(user.name)
                 )}
               </div>
-              {/* 編集アイコン */}
-              <div className="absolute bottom-0 right-0 bg-white rounded-full p-1 border border-gray-200">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                </svg>
-              </div>
             </div>
             <h3 className="mt-4 text-lg font-medium">{user.name}</h3>
-            <button className="mt-4 w-full py-2 border border-gray-300 rounded-full text-blue-600 font-medium hover:bg-gray-50 transition">
+            {/* Googleアカウントを管理 */}
+            <a
+              href="https://myaccount.google.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 w-full py-2 border border-gray-300 rounded-full text-blue-600 font-medium hover:bg-gray-50 transition text-center"
+            >
               Google アカウントを管理
-            </button>
+            </a>
+            {/* 再ログイン、ログアウト */}
             <div className="mt-6 w-full grid grid-cols-2 gap-4">
-              <button className="py-3 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition">
-                <span className="text-blue-600 mr-2">+</span>
-                <span>アカウントを追加</span>
+              <button
+                onClick={onLogin}
+                className="py-3 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
+                </svg>
+                <span>再ログイン</span>
               </button>
               <button
                 onClick={onLogout}

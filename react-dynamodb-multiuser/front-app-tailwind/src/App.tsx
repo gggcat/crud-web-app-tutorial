@@ -31,10 +31,11 @@ function App() {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => res.ok ? res.json() : null)
-        .then(data => data && setUser(data))
+        .then(api_result => api_result && setUser(api_result.data))
         .catch(() => setUser(null));
     }
   }, []);
+  console.log(user)
 
   return (
     <div className="flex min-h-screen bg-gray-100">
