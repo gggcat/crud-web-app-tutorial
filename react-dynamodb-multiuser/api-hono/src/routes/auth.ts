@@ -57,25 +57,25 @@ auth.get('/google', async (c) => {
   }
 
   try {
+    // デバッグログ（本番運用時は削除推奨）
+    console.log('Google User Info:', {
+      id: googleUser.id,
+      email: googleUser.email,
+      name: googleUser.name,
+      picture: googleUser.picture
+    })
+
     // ユーザー情報をDBから取得または新規作成
     const user = await createOrGetUser(c, {
       provider: 'google',
       providerId: googleUser.id, // GoogleのユーザーID
       email: googleUser.email,
       name: googleUser.name || '',
-      picture: googleUser.picture || ''
+      picture: googleUser.picture || '' // プロフィール画像URL
     })
 
     // セッショントークンを発行
     const appToken = await createSessionToken(c, user.user_id)
-    // return c.json({
-    //   token: appToken,
-    //   user: {
-    //     id: user.user_id,
-    //     email: user.email,
-    //     name: user.name
-    //   }
-    // }, 201)
 
     //トークンをフロントエンドのコールバックへ返す
     const code = c.req.query('code');

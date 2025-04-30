@@ -10,6 +10,7 @@ import { authMiddleware, protectedRoute } from './middlewares/auth'
 
 //ルート
 import auth from './routes/auth'
+import users from './routes/users'
 import stocks from './routes/stocks'
 
 const app = new Hono<{ Bindings: Env }>()
@@ -23,9 +24,12 @@ app.use('*', corsMiddleware)
 // JWT認証ミドルウェア
 app.use('/stocks/*', authMiddleware)
 app.use('/stocks/*', protectedRoute)
+app.use('/users/*', authMiddleware)
+app.use('/users/*', protectedRoute)
 
 // ルート設定
 app.route('/auth', auth)
 app.route('/stocks', stocks)
+app.route('/users', users) // ユーザールートを追加
 
 export default app

@@ -1,3 +1,5 @@
+import UserIcon from "./UserIcon";
+
 export default function Header({ user, onLogin, onLogout }) {
     return (
       <header className="flex items-center justify-between bg-white px-8 py-4 border-b">
@@ -14,27 +16,12 @@ export default function Header({ user, onLogin, onLogout }) {
             <span className="material-icons">notifications</span>
           </button>
           {user ? (
-            <div className="flex items-center space-x-2">
-              {user.picture && (
-                <img
-                  src={user.picture}
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full"
-                />
-              )}
-              <button
-                className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-gray-700"
-                onClick={onLogout}
-              >
-                {user.name.charAt(0)}
-              </button>
-            </div>
+            <button onClick={onLogout} className="focus:outline-none">
+              <UserIcon user={user} size={32} />
+            </button>
           ) : (
-            <button
-              className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center font-bold text-gray-700"
-              onClick={onLogin}
-            >
-              G
+            <button onClick={onLogin} className="focus:outline-none">
+              <UserIcon user={null} size={32} />
             </button>
           )}
         </div>
