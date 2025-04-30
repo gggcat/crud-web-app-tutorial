@@ -24,8 +24,8 @@ app.use('*', corsMiddleware)
 // JWT認証ミドルウェア
 app.use('/stocks/*', authMiddleware)
 app.use('/stocks/*', protectedRoute)
-app.use('/users/*', authMiddleware)
-app.use('/users/*', protectedRoute)
+app.use('/users', authMiddleware)
+app.use('/users', protectedRoute)
 
 // ルート設定
 app.route('/auth', auth)

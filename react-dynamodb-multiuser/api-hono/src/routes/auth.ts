@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { googleAuth } from '@hono/oauth-providers/google'
 import { env } from 'hono/adapter'
-import { createOrGetUser } from '../services/user'
+import { createOrGetUser } from '../services/users'
 import type { GoogleUser } from '@hono/oauth-providers/google'
 import type { Env } from '../types/env'
 import { sign } from 'hono/jwt'

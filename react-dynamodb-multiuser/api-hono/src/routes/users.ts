@@ -1,16 +1,21 @@
 // src/routes/users.ts
 import { Hono } from 'hono'
 import { formatResponse } from '../utils/response'
-import { getUserByProviderId } from '../services/user'
+import { getUserByProviderId } from '../services/users'
 
 const users = new Hono()
 
 // 認証済みユーザー自身の情報を取得
-users.get('/me', async (c) => {
+users.get('/', async (c) => {
   const userId = c.get('jwtPayload').sub
-
+  console.log("*********************************************")
+  console.log(userId)
+  console.log("*********************************************")
   try {
     const user = await getUserByProviderId(c, userId)
+    console.log("*********************************************")
+    console.log(user)
+    console.log("*********************************************")
     if (!user) {
       return formatResponse(c, { error: 'ユーザーが見つかりません' }, 404)
     }

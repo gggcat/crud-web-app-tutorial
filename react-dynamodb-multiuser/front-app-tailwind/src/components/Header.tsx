@@ -1,4 +1,5 @@
 import UserIcon from "./UserIcon";
+import UserProfileDropdown from './UserProfileDropdown';
 
 export default function Header({ user, onLogin, onLogout }) {
     return (
@@ -15,15 +16,7 @@ export default function Header({ user, onLogin, onLogout }) {
           <button className="text-gray-500 hover:text-gray-700">
             <span className="material-icons">notifications</span>
           </button>
-          {user ? (
-            <button onClick={onLogout} className="focus:outline-none">
-              <UserIcon user={user} size={32} />
-            </button>
-          ) : (
-            <button onClick={onLogin} className="focus:outline-none">
-              <UserIcon user={null} size={32} />
-            </button>
-          )}
+          <UserProfileDropdown user={user} onLogin={onLogin} onLogout={onLogout} />
         </div>
       </header>
     );

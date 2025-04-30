@@ -97,13 +97,15 @@ export const getUserByProviderId = async (
   // dynamodb.tsのクライアントを取得
   const client = getDynamoClient(c)
 
+  console.log(`user id = [${providerId}] !!!!!!!`)
+
   try {
     const { Item: user } = await client.get({
       TableName: USERS_TABLE,
       Key: { user_id: providerId },
       ConsistentRead: true
     })
-
+    console.log(`[${user}] !!!!!!!`)
     return user ? user as User : null
   } catch (error) {
     console.error(`[${providerId}] ユーザー情報取得エラー:`, error)
