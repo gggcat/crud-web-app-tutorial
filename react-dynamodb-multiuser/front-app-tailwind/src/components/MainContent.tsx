@@ -1,4 +1,5 @@
 import AppListMTailwind from '../AppListTailwind';
+import AppMyCalendar from '../AppMyCalendar'
 
 export default function MainContent({ selectedMenu }) {
   return (
@@ -6,6 +7,11 @@ export default function MainContent({ selectedMenu }) {
       {selectedMenu === 'list-tailwind' && (
         <div className="bg-white rounded-lg shadow p-6">
           <AppListMTailwind />
+        </div>
+      )}
+      {selectedMenu === 'my-calendar' && (
+        <div className="bg-white rounded-lg shadow p-6">
+          <AppMyCalendar />
         </div>
       )}
       {selectedMenu !== 'list-tailwind' && (

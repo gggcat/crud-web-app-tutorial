@@ -5,7 +5,7 @@ export default function Sidebar({ selectedMenu, onSelect }) {
 
   const menus = [
     { key: 'list-tailwind', label: '銘柄一覧' },
-    { key: 'search-performance', label: '検索パフォーマンス' },
+    { key: 'my-calendar', label: 'マイカレンダー' },
     { key: 'url-inspect', label: 'URL検査' },
     { key: 'indexing', label: 'インデックス作成' },
     { key: 'experience', label: 'エクスペリエンス' },
